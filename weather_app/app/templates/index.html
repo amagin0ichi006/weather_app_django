@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+
+    <!-- Font awesome link-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .weather_details {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bolder;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(circle, #1c7fc2 0%, #009cdc 28%, #0d9ade 32%, #011844 100%);
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 300;
+            font-size: 22px;
+        }
+
+        .weather {
+            width: 80%;
+            height: 100%;
+            margin: 0 auto;
+            /*to centralize the div u can do dis  */
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
+        .weather_search {
+            width: 100%;
+            padding: 15px 10px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            font-size: 20px;
+            color: inherit;
+            margin-bottom: 20px;
+
+        }
+
+        .weather_search::placeholder {
+            color: #fff;
+        }
+
+        .weather_today {
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+        .weather_image {
+            width: 40vmin;
+            align-self: center;
+        }
+
+        .weather_city {
+            font-size: 36px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .weather_day {
+            font-size: 30px;
+            margin: 10px 0;
+            font-weight: 400;
+        }
+
+        .weather_indicator::before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            margin-right: 10px;
+
+        }
+
+        .weather_indicator--humidity::before {
+            background-image: url("https://cdn-icons-png.flaticon.com/512/4561/4561262.png");
+        }
+
+        .weather_indicator--wind::before {
+            background-image: url("https://cdn-icons-png.flaticon.com/128/1506/1506761.png");
+        }
+
+        .weather_indicator--pressure::before {
+            background-image: url("https://cdn-icons-png.flaticon.com/128/3977/3977784.png");
+        }
+
+        .weather_temp {
+            font-size: 60px;
+        }
+
+        .weather_forecast {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 70px;
+        }
+
+        .weather_forecast_icon {
+            max-width: 50%;
+        }
+
+        .weather_forecast_item {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 10px 10px;
+            width: 100%;
+        }
+
+        @media only screen and (max-width:1080px){
+            .weather_today {
+                width:100%;
+            }
+            .weather_forecast {
+                display: block;
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="weather">
+        <form method='post'>
+            {% csrf_token %}
+            <input type="search" class="weather_search" name="city1" placeholder="your city">
+        </form>
+        {% if weather_data1 %}
+
+        <div class="weather_today">
+            {% if weather_data1 %}
+            <div class="weather_details">
+                <h2 class="weather_city">{{ weather_data1.city }}</h2>
+                <p class="weather_day">{{ weather_data1.day}}</p>
+                <p class="weather_day">{{ weather_data1.description}}</p>
+                <div class="weather_current">
+                    <p class="weather_indicator weather_indicator--humidity"><span class="value">{{weather_data1.humidity }}</span>%</p>
+                    <p class="weather_indicator weather_indicator--wind"><span class="value">{{ weather_data1.wind}}</span>m/s</p>
+                    <p class="weather_indicator weather_indicator--pressure"><span class="value">{{weather_data1.pressure }}</span>hpa</p>
+                </div>
+            </div>
+            <img src='https://cdn-icons-png.flaticon.com/512/3222/3222800.png' alt="clear-sky" class="weather_image">
+            <div class="weather_temp"><span class="value">{{ weather_data1.temperature }}</span>&deg;C</div>
+            {% endif %}
+
+        </div>
+        <div class="weather_forecast">
+
+            {% if daily_forecast %}
+
+            {% for d_f in daily_forecast %}
+            <article class="weather_forecast_item">
+
+                <img src="https://openweathermap.org/img/w/{{ d_f.icon}}.png" alt="clear-sky"
+                    class="weather_forecast_icon">
+                <h3 class="weather_forecast_day">{{ d_f.day }}</h3>
+                <h3 class="weather_forecast_day">{{ d_f.description }}</h3>
+                <p class="weather_forecast_temperature"><span class="value">{{ d_f.max_temp }}</span>&deg;C
+                </p>
+
+            </article>
+            {%endfor%}
+
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+
+</body>
+
+</html>
